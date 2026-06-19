@@ -147,49 +147,11 @@ export function isRiskyCommand(command, commandName) {
 }
 
 export async function enforceAbuseProtection(interaction, command, commandName) {
-  if (!isRiskyCommand(command, commandName)) {
-    return {
-      allowed: true,
-      risky: false,
-      remainingMs: 0,
-      policy: null
-    };
-  }
-
-  const policy = getCommandPolicy(command);
-  const key = getProtectionKey(interaction, commandName);
-  const allowed = await checkRateLimit(key, policy.maxAttempts, policy.windowMs);
-
-  if (allowed) {
-    return {
-      allowed: true,
-      risky: true,
-      remainingMs: 0,
-      policy
-    };
-  }
-
-  const status = getRateLimitStatus(key, policy.windowMs);
-  const remainingMs = Math.max(0, status?.remaining || 0);
-
-  logger.info('Risky command blocked by cooldown policy', {
-    event: 'interaction.command.abuse_blocked',
-    guildId: interaction.guildId,
-    userId: interaction.user?.id,
-    command: normalizeCommandName(commandName),
-    maxAttempts: policy.maxAttempts,
-    windowMs: policy.windowMs,
-    remainingMs,
-    attemptCount: status?.attempts || 0
-  });
-
-  recordBlockedAttempt(key, commandName, interaction, command, remainingMs);
-
   return {
-    allowed: false,
-    risky: true,
-    remainingMs,
-    policy
+    allowed: true,
+    risky: false,
+    remainingMs: 0,
+    policy: null
   };
 }
 
