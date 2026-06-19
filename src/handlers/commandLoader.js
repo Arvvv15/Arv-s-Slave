@@ -239,7 +239,9 @@ const registeredNames = new Set();
             try {
                 logger.info(`Registering ${commandsToRegister.length} new commands...`);
                 
-                await guild.commands.set(commandsToRegister);
+                for (const guild of client.guilds.cache.values()) {
+    await guild.commands.set(commandsToRegister);
+}
                 
                 logger.info(`Successfully registered ${commandsToRegister.length} guild commands`);
                 
